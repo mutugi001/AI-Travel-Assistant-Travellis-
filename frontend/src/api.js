@@ -1,4 +1,4 @@
-const BASE_URL = ""; // proxied to backend via vite.config.js in dev
+const BASE_URL =  import.meta.env.VITE_API_URL || ""; // proxied to backend via vite.config.js in dev
 
 export async function sendMessage(conversationId, message) {
   const res = await fetch(`${BASE_URL}/api/chat`, {

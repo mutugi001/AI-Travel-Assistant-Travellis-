@@ -155,7 +155,7 @@ interrupt a consultant's day, but nothing is thrown away.
 
 ---
 
-## 4. Edge cases (as called out in the assignment)
+## 4. Edge cases
 
 | Edge case | How it's handled |
 |---|---|

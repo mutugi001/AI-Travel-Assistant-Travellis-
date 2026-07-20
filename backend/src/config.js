@@ -18,7 +18,12 @@ export const config = {
 
   gemini: {
     apiKey: process.env.GEMINI_API_KEY,
-    model: process.env.GEMINI_MODEL || "gemini-1.5",
+    model: process.env.GEMINI_MODEL || "gemini-3.1-flash-lite",
+  },
+  
+  grok: {
+    apiKey :process.env.GROK_API_KEY,
+    model: process.env.GROK_MODEL || "grok-1.5",
   },
 
   mongodbUri: process.env.MONGODB_URI || "",

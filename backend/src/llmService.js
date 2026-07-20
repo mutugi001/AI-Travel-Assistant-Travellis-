@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 import OpenAI from "openai";
 import { config } from "./config.js";
 
@@ -140,6 +141,35 @@ async function callOpenAI(history, currentFields) {
   return safeParseJson(response.choices[0]?.message?.content);
 }
 
+async function callGemini(history, currentFields) {
+  if (!config.gemini?.apiKey) {
+    throw new Error(
+      "GEMINI_API_KEY is not set. Add it to backend/.env."
+    );
+  }
+
+  const ai = new GoogleGenAI({
+    apiKey: config.gemini.apiKey,
+  });
+
+  const prompt = `${SYSTEM_PROMPT}
+
+Conversation:
+${buildUserContent(history, currentFields)}
+
+Remember:
+- Return ONLY the JSON object.
+- Do not wrap it in markdown.
+`;
+
+  const response = await ai.models.generateContent({
+    model: config.gemini.model || "gemini-2.5-flash",
+    contents: prompt,
+  });
+
+  return safeParseJson(response.text);
+}
+
 /**
  * Runs one conversational turn through the configured LLM provider.
  * @param {{role: "user"|"assistant", content: string}[]} history
@@ -147,9 +177,20 @@ async function callOpenAI(history, currentFields) {
  * @returns {Promise<object>} parsed LLM turn result matching the OUTPUT FORMAT above
  */
 export async function runConversationTurn(history, currentFields) {
-  const provider = config.llmProvider;
-  if (provider === "openai") {
-    return callOpenAI(history, currentFields);
+  switch (config.llmProvider?.toLowerCase()) {
+
+    case "gemini":
+      return callGemini(history, currentFields);
+
+    case "openai":
+      return callOpenAI(history, currentFields);
+
+    case "anthropic":
+      return callAnthropic(history, currentFields);
+
+    default:
+      throw new Error(
+        `Unsupported LLM provider: ${config.llmProvider}`
+      );
   }
-  return callAnthropic(history, currentFields);
 }

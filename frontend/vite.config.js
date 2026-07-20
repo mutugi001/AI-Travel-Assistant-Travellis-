@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: process.env.VITE_API_URL || "http://localhost:4000/api" || "https://ai-travel-assistant-travellis-backend.onrender.com/api",
+        target: process.env.VITE_BACKEND_API_URL || "http://localhost:4000" || "https://ai-travel-assistant-travellis-backend.onrender.com",
         changeOrigin: true,
       },
     },
